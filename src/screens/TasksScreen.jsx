@@ -19,13 +19,14 @@ import { Ionicons } from '@expo/vector-icons';
 import TaskCard from '../components/TaskCard';
 import { getTasks, insertTask, updateTaskCompletion } from '../database/database';
 import { colors } from '../theme/colors';
+import { dateFromChoice, dueDateLabel } from '../utils/dates';
 
 const filters = [
   { key: 'All', label: 'All tasks' },
   { key: 'Pending', label: 'To do' },
   { key: 'Completed', label: 'Done' },
 ];
-const dueOptions = ['Today', 'Tomorrow', 'This week', 'Anytime'];
+const dueOptions = ['Today', 'Tomorrow', 'In 7 days', 'Anytime'];
 const priorityOptions = ['Low', 'Medium', 'High'];
 
 function ChoiceGroup({ title, options, selected, onSelect }) {
@@ -135,7 +136,7 @@ export default function TasksScreen() {
       id: `task-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
       title: cleanTitle,
       subject: subject.trim() || 'General',
-      due,
+      due: dateFromChoice(due),
       priority,
       note: note.trim(),
       completed: false,
@@ -285,7 +286,7 @@ export default function TasksScreen() {
           <View style={styles.modalPanel}>
             <View style={styles.modalHeader}>
               <View style={styles.modalHeaderText}>
-                <Text style={styles.modalTitle}>Add a task for today</Text>
+                <Text style={styles.modalTitle}>Add a new task</Text>
                 <Text style={styles.modalHint}>Keep it simple. Start small.</Text>
               </View>
               <Pressable onPress={() => { Keyboard.dismiss(); setShowAdd(false); }} accessibilityLabel="Close add task">
@@ -357,7 +358,7 @@ export default function TasksScreen() {
                 <Text style={styles.detailSubject}>{selectedTask.subject}</Text>
                 <View style={styles.detailInfo}>
                   <Text style={styles.detailLabel}>When</Text>
-                  <Text style={styles.detailValue}>{selectedTask.due}</Text>
+                  <Text style={styles.detailValue}>{dueDateLabel(selectedTask.due)}</Text>
                 </View>
                 <View style={styles.detailInfo}>
                   <Text style={styles.detailLabel}>Priority</Text>
