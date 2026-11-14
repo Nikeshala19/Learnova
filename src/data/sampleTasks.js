@@ -1,5 +1,3 @@
-// Original example records seeded once into the offline SQLite database.
-// Relative dates are converted to fixed dates when inserted.
 export const sampleTasks = [
   {
     id: 'task-1',

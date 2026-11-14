@@ -1,5 +1,3 @@
-// Store dates as local YYYY-MM-DD values, rather than permanent labels such as "Today".
-// The date has no time zone offset, so it stays the same calendar day on this device.
 export function localDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');

@@ -1,5 +1,3 @@
-// Original sample records for the Learnova academic-goals feature.
-// Added to SQLite once when the Goals feature is first installed.
 export const sampleGoals = [
   {
     id: 'goal-1',
