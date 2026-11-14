@@ -26,8 +26,7 @@ export default function FocusScreen() {
     return () => { isActive = false; };
   }, [db]));
 
-  // Use the clock instead of counting interval callbacks. The countdown stays
-  // accurate even when Android pauses JavaScript while the app is backgrounded.
+ 
   useEffect(() => {
     if (!running) return undefined;
     const updateClock = () => {

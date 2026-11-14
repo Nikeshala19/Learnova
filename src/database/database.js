@@ -5,7 +5,7 @@ import { sampleGoals } from '../data/sampleGoals';
 import { dateFromChoice } from '../utils/dates';
 
 export async function initializeDatabase(db) {
-  // Use execAsync only for fixed SQL; user-provided values use runAsync parameters.
+  
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS tasks (
@@ -37,8 +37,7 @@ export async function initializeDatabase(db) {
     );
   `);
 
-  // Convert old relative labels once. The original date of those labels was not
-  // stored, so we anchor them to the day this upgrade is first installed.
+  
   const dateMigration = await db.getFirstAsync(
     'SELECT value FROM app_meta WHERE key = ?', 'task_date_migration_v1'
   );
@@ -55,8 +54,7 @@ export async function initializeDatabase(db) {
     });
   }
 
-  // Independent seed flags are important for users upgrading from Phase 4.
-  // The existing tasks_seeded flag must not prevent the new goals from appearing.
+  
   const tasksSeeded = await db.getFirstAsync(
     'SELECT value FROM app_meta WHERE key = ?', 'tasks_seeded'
   );
