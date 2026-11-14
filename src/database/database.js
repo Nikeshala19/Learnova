@@ -2,6 +2,7 @@
 // This file extends the Phase 4 database. Existing tasks are preserved.
 import { sampleTasks } from '../data/sampleTasks';
 import { sampleGoals } from '../data/sampleGoals';
+import { dateFromChoice } from '../utils/dates';
 
 export async function initializeDatabase(db) {
   // Use execAsync only for fixed SQL; user-provided values use runAsync parameters.
@@ -29,7 +30,30 @@ export async function initializeDatabase(db) {
       key TEXT PRIMARY KEY NOT NULL,
       value TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS focus_sessions (
+      id TEXT PRIMARY KEY NOT NULL,
+      duration_seconds INTEGER NOT NULL CHECK (duration_seconds > 0),
+      created_at INTEGER NOT NULL
+    );
   `);
+
+  // Convert old relative labels once. The original date of those labels was not
+  // stored, so we anchor them to the day this upgrade is first installed.
+  const dateMigration = await db.getFirstAsync(
+    'SELECT value FROM app_meta WHERE key = ?', 'task_date_migration_v1'
+  );
+  if (!dateMigration) {
+    await db.withTransactionAsync(async () => {
+      for (const label of ['Today', 'Tomorrow', 'This week']) {
+        await db.runAsync(
+          'UPDATE tasks SET due = ? WHERE due = ?', dateFromChoice(label), label
+        );
+      }
+      await db.runAsync(
+        'INSERT INTO app_meta (key, value) VALUES (?, ?)', 'task_date_migration_v1', 'yes'
+      );
+    });
+  }
 
   // Independent seed flags are important for users upgrading from Phase 4.
   // The existing tasks_seeded flag must not prevent the new goals from appearing.
@@ -44,7 +68,7 @@ export async function initializeDatabase(db) {
           `INSERT OR IGNORE INTO tasks
             (id, title, subject, due, priority, note, completed, created_at)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-          task.id, task.title, task.subject, task.due, task.priority,
+          task.id, task.title, task.subject, dateFromChoice(task.due), task.priority,
           task.note, task.completed ? 1 : 0, now - index * 1000
         );
       }
@@ -127,4 +151,41 @@ export async function updateGoalStatus(db, id, achieved) {
 
 export async function deleteGoal(db, id) {
   await db.runAsync('DELETE FROM goals WHERE id = ?', id);
+}
+
+// ----------------- Focus & Progress -----------------
+export async function addFocusSession(db, seconds) {
+  if (!Number.isInteger(seconds) || seconds <= 0 || seconds > 25 * 60) {
+    throw new Error('Invalid study session duration');
+  }
+  await db.runAsync(
+    'INSERT INTO focus_sessions (id, duration_seconds, created_at) VALUES (?, ?, ?)',
+    `focus-${Date.now()}-${Math.floor(Math.random() * 1000000)}`, seconds, Date.now()
+  );
+}
+
+export async function getProgressStats(db) {
+  const row = await db.getFirstAsync(`
+    SELECT
+      (SELECT COUNT(*) FROM tasks) AS totalTasks,
+      (SELECT COUNT(*) FROM tasks WHERE completed = 1) AS completedTasks,
+      (SELECT COUNT(*) FROM goals) AS totalGoals,
+      (SELECT COUNT(*) FROM goals WHERE achieved = 1) AS achievedGoals,
+      (SELECT COUNT(*) FROM focus_sessions) AS focusSessions,
+      (SELECT COALESCE(SUM(duration_seconds), 0) FROM focus_sessions) AS focusSeconds
+  `);
+  return {
+    totalTasks: Number(row?.totalTasks ?? 0),
+    completedTasks: Number(row?.completedTasks ?? 0),
+    totalGoals: Number(row?.totalGoals ?? 0),
+    achievedGoals: Number(row?.achievedGoals ?? 0),
+    focusSessions: Number(row?.focusSessions ?? 0),
+    focusSeconds: Number(row?.focusSeconds ?? 0),
+  };
+}
+
+export async function getRecentFocusSessions(db) {
+  return db.getAllAsync(
+    'SELECT id, duration_seconds, created_at FROM focus_sessions ORDER BY created_at DESC LIMIT 5'
+  );
 }
