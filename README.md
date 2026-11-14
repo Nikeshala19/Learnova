@@ -6,6 +6,7 @@ Learnova is a mobile application designed to help students organize academic res
 
 This project was developed as an **individual React Native academic project**. Its main focus is a straightforward, user-friendly study workflow without requiring an account, internet-based API, or cloud database.
 
+
 ## Project objectives
 
 - Help students keep track of academic tasks and their due dates.
@@ -13,10 +14,12 @@ This project was developed as an **individual React Native academic project**. I
 - Encourage focused study sessions using a simple countdown timer.
 - Display progress calculated from actual locally saved records.
 - Keep essential data accessible without an internet connection after the app is loaded.
+  
 
 ## Main features
 
 The application contains **five main screens**, accessible through a bottom navigation bar.
+
 
 | Screen | Description |
 | --- | --- |
@@ -26,9 +29,11 @@ The application contains **five main screens**, accessible through a bottom navi
 | **Focus** | Use a fixed **25-minute study timer** with Start, Pause, Continue, Reset, and **Finish & Save**. The actual time studied is saved locally when the user chooses to save a session. |
 | **Progress** | View completed and pending task counts, achieved goals, task/goal completion percentages, total recorded focus time, and recent saved study sessions. |
 
+
 ### Task due dates
 
 The Tasks screen offers **Today**, **Tomorrow**, **In 7 days**, and **Anytime** choices. Dates are stored as local calendar dates rather than permanent relative labels, so a task marked *Today* does not incorrectly remain *Today* on subsequent days.
+
 
 ### Offline data
 
@@ -36,6 +41,7 @@ The Tasks screen offers **Today**, **Tomorrow**, **In 7 days**, and **Anytime** 
 - Additional tasks, goals, status changes, and saved focus sessions are stored on the device.
 - The app loads these records dynamically from SQLite rather than depending on hard-coded display values.
 - No public API, online authentication, or cloud database is required for its core features.
+
 
 ## Technologies used
 
@@ -52,6 +58,7 @@ The Tasks screen offers **Today**, **Tomorrow**, **In 7 days**, and **Anytime** 
 | **Git and GitHub** | Version control, branches, and Pull Requests |
 
 The supplied project uses **React 19.3.0**, **React Native 0.88.1**, and **Expo `~58.0.23`** in `package.json`.
+
 
 ## Project structure
 
@@ -81,6 +88,7 @@ Learnova/
 └── README.md
 ```
 
+
 ## Database design
 
 Learnova uses a local SQLite database named **`learnova.db`**. It is initialized when the application starts through Expo's `SQLiteProvider`.
@@ -94,7 +102,9 @@ Learnova uses a local SQLite database named **`learnova.db`**. It is initialized
 
 Database access is handled by functions in `src/database/database.js`, using parameterized queries for user-provided values. The Progress screen uses database queries to calculate its statistics from saved records.
 
+
 ## Installation and setup
+
 
 ### Requirements
 
@@ -103,11 +113,13 @@ Database access is handled by functions in `src/database/database.js`, using par
 - **Expo Go** installed on an Android device, compatible with **Expo SDK 58**
 - A local copy of this repository
 
+
 ### 1. Get the project
 
 Clone the repository through **GitHub Desktop** (*File → Clone repository*) or download the repository ZIP from GitHub. Open the **Learnova project folder** in VS Code.
 
 If using the command line to clone, copy the HTTPS clone URL from your GitHub repository and run:
+
 
 ```bash
 git clone <YOUR_REPOSITORY_HTTPS_URL>
@@ -116,6 +128,7 @@ cd Learnova
 
 > If the downloaded or cloned folder has a different name, open that folder instead.
 
+
 ### 2. Install dependencies
 
 In the project root (where `package.json` is located), run:
@@ -123,6 +136,7 @@ In the project root (where `package.json` is located), run:
 ```bash
 npm ci
 ```
+
 
 ### 3. Start the application
 
@@ -140,6 +154,7 @@ npx expo start --tunnel
 
 Tunnel mode requires internet access during development.
 
+
 ## How to use Learnova
 
 1. **Home:** View your pending tasks, active goals, and shortcuts.
@@ -147,6 +162,7 @@ Tunnel mode requires internet access during development.
 3. **Goals:** Create a learning goal, view its information, and mark it achieved when completed.
 4. **Focus:** Start the 25-minute timer, pause or continue if needed, and select **Finish & Save** to record the actual studied time. **Reset** discards the unsaved session.
 5. **Progress:** Review your completion statistics and the recent focus-session history.
+
 
 ## Testing checklist
 
@@ -163,6 +179,7 @@ Before presentation or submission, verify the following in Expo Go:
 - [ ] Saved records remain after closing and reopening the app **without clearing Expo Go storage**.
 - [ ] The dark theme remains readable and usable on the test device.
 
+
 ## GitHub development workflow
 
 This project is maintained using GitHub Desktop and a feature-branch workflow:
@@ -177,6 +194,7 @@ This project is maintained using GitHub Desktop and a feature-branch workflow:
 
 This workflow keeps the commit history, branch usage, and integration of updates visible for project evaluation.
 
+
 ## Limitations and scope
 
 - Designed for **one user on one device**; there is no login, profile synchronization, or cloud backup.
@@ -185,6 +203,7 @@ This workflow keeps the commit history, branch usage, and integration of updates
 - The Focus timer uses a fixed 25-minute duration rather than customizable session lengths.
 - Goals use **In Progress** and **Achieved** states; individual multi-step goal percentages are not implemented.
 - Deleting the app or clearing its local storage may delete the SQLite data.
+
 
 ## Academic project information
 
