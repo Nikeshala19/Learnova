@@ -1,156 +1,100 @@
-# Learnova 📚
+# Learnova — Students Productivity Tracker
 
-**A simple and organized space for student productivity.**
-
-Learnova is a mobile application designed to help students manage their daily academic tasks, set personal goals, and build productive study habits. It brings essential planning tools together in a clean, easy-to-use interface, helping students stay organized and work towards their goals one step at a time.
-
-The application is developed with **React Native and Expo** and uses **SQLite** to store tasks and goals locally on the device.
+A lightweight **offline React Native student productivity app** built with **Expo SDK 58**, **JavaScript/JSX**, and **SQLite**. It uses a dark navy-blue interface and has five tabs: Home, Tasks, Goals, Focus, and Progress.
 
 ## Features
 
-### ✅ Task Management
-- Create tasks with a title, subject, due-date label, priority level, and optional notes.
-- Mark tasks as completed or pending.
-- Search tasks by title, subject, or notes.
-- Filter tasks by all, pending, or completed status.
-- View task completion progress as a percentage.
+- **Home:** friendly welcome, quick navigation, real pending-task and active-goal counts.
+- **Tasks:** create tasks with a subject, notes, priority, and a quick due-date choice; search and filter by completion; mark tasks complete; view task details.
+- **Goals:** create academic or personal goals with notes; search, filter, mark achieved, and delete.
+- **Focus:** a 25-minute countdown with Start, Pause, Continue, Reset, and **Finish & save**. Actual time studied is recorded locally.
+- **Progress:** task completion, achieved goals, total focus time, and the five most recent saved focus sessions. It refreshes when opened.
+- **Offline data:** seeded example tasks and goals are added once and then stored in SQLite. New records survive app restarts.
 
-### 🎯 Goal Management
-- Add goals under **Academics**, **Skills**, or **Personal** categories.
-- Include optional notes for each goal.
-- Mark goals as achieved or in progress.
-- Search and filter goals.
-- View overall goal achievement progress.
-- Delete goals that are no longer needed.
+## Technology
 
-### 🏠 Home Dashboard
-- Access the main sections of the application from one screen.
-- Quickly navigate to Tasks, Goals, Focus, and Progress.
-- Enjoy a clean, student-friendly interface with a consistent dark theme.
+- React Native and Expo SDK 58 (Expo Go compatible)
+- JavaScript and JSX (`App.jsx` and files in `src/`)
+- React Navigation (five bottom tabs)
+- Expo SQLite (local database `learnova.db`)
+- React Native StyleSheet and Ionicons
 
-### 💾 Offline Data Storage
-- Store tasks and goals locally using SQLite.
-- Access saved tasks and goals without an internet connection.
-- Start with sample tasks and goals added when the database is first initialized.
+There is **no user login, online backend, or cloud sync**.
 
-## Planned Features
+## Getting started on Windows
 
-The following sections are available in the app as introductory screens, with their main functionality planned for future development:
+1. Install Node.js and Git, and install **Expo Go** on your Android phone.
+2. Open the `Learnova` folder in VS Code, not its parent folder.
+3. Install dependencies:
 
-- **Focus Timer:** A 25-minute study timer with start, pause, and reset controls.
-- **Progress Tracking:** A summary of completed tasks, achieved goals, and study time.
+   ```powershell
+   npm ci
+   ```
 
-## Technology Stack
+4. Run the Expo development server:
 
-| Technology | Purpose |
-| --- | --- |
-| React Native | Mobile application development |
-| Expo (SDK 58) | Development and application tooling |
-| JavaScript and JSX | Application logic and user interface |
-| React Navigation | Bottom-tab navigation |
-| Expo SQLite | Local database and offline storage |
-| Expo Vector Icons | Icons and visual elements |
+   ```powershell
+   npx expo start -c
+   ```
 
-## Getting Started
+5. Connect your phone and PC to the same Wi-Fi. Open Expo Go and scan the QR code.
+6. If your phone cannot reach Metro, try `npx expo start --tunnel` (requires internet during development).
 
-### Prerequisites
+SQLite data operations work offline. **Expo Go may still need Metro to load the development bundle**, so a standalone build is more appropriate for validating completely offline cold launches.
 
-Make sure you have:
+## What to test
 
-- **Node.js** and **npm** installed.
-- **Expo Go** on a compatible mobile device, or an Android/iOS development environment suitable for the project's Expo SDK.
-- **Git** (optional, for cloning the repository).
+1. Confirm that Home, Tasks, Goals, Focus and Progress all open.
+2. Create a task due Today; complete it, then check the updated Home and Progress counts.
+3. Create a goal, mark it achieved, and check Progress.
+4. Run Focus for a few seconds, tap **Finish & save**, then view Focus history on Progress.
+5. Close and reopen Learnova without clearing the app's storage. Check that tasks, goals, and saved focus time remain.
+6. Search and filter Tasks and Goals, and check that the navy-blue interface is readable.
 
-### Installation
-
-**1. Clone the repository**
-
-```bash
-git clone <YOUR_REPOSITORY_URL>
-cd Learnova
-```
-
-Replace `<YOUR_REPOSITORY_URL>` with the URL of your GitHub repository.
-
-**2. Install dependencies**
-
-```bash
-npm install
-```
-
-**3. Start the development server**
-
-```bash
-npx expo start
-```
-
-**4. Open the application**
-
-Follow the instructions displayed in the terminal to open the project on a compatible device or emulator. You can also scan the QR code using Expo Go when supported by the project's SDK and native dependencies.
-
-### Available Commands
-
-| Command | Description |
-| --- | --- |
-| `npm start` | Start the Expo development server |
-| `npm run android` | Start Expo with the Android option |
-| `npm run ios` | Start Expo with the iOS option |
-| `npm run web` | Start Expo with the web option; web compatibility has not been verified |
-
-## Project Structure
+## Folder structure
 
 ```text
 Learnova/
-├── assets/                     # App icons and other assets
+├── App.jsx
+├── app.json
+├── index.js
+├── assets/
 ├── src/
-│   ├── components/             # Reusable interface components
-│   │   ├── GoalCard.jsx
-│   │   ├── IntroScreen.jsx
-│   │   └── TaskCard.jsx
-│   ├── data/                   # Initial sample data
-│   │   ├── sampleGoals.js
-│   │   └── sampleTasks.js
-│   ├── database/
-│   │   └── database.js          # SQLite setup and data operations
-│   ├── navigation/
-│   │   └── AppNavigator.jsx     # Bottom-tab navigation
-│   ├── screens/
-│   │   ├── DashboardScreen.jsx
-│   │   ├── FocusScreen.jsx
-│   │   ├── GoalsScreen.jsx
-│   │   ├── ProgressScreen.jsx
-│   │   └── TasksScreen.jsx
-│   └── theme/
-│       └── colors.js           # Shared app colors
-├── App.jsx                     # Application providers and navigation
-├── app.json                    # Expo application configuration
-├── index.js                    # Application entry point
-└── package.json                # Dependencies and scripts
+│   ├── components/        # Reusable task and goal cards
+│   ├── data/              # Original local sample data
+│   ├── database/          # SQLite schema and queries
+│   ├── navigation/        # Five-tab navigation
+│   ├── screens/           # Home, Tasks, Goals, Focus, Progress
+│   ├── theme/             # Colours
+│   └── utils/             # Date and duration helpers
+└── package.json
 ```
 
-## How the Application Works
+## Database summary
 
-Learnova uses a bottom navigation bar with five sections: **Home, Tasks, Goals, Focus, and Progress**.
+- `tasks`: title, subject, due date, priority, note, completed status.
+- `goals`: title, category, note, achieved status.
+- `focus_sessions`: seconds studied and creation timestamp.
+- `app_meta`: one-time seed and migration flags.
 
-Tasks and goals are stored in a local SQLite database named `learnova.db`. When the application starts for the first time, it creates the required database tables and inserts example records. Users can then add their own tasks and goals, update completion status, and review their progress. These changes remain saved locally on the device.
+Due dates are saved as local `YYYY-MM-DD` calendar dates, or `Anytime`. Quick choices are Today, Tomorrow and In 7 days. Older relative labels are converted **once on upgrade**, anchored to the installation day because the older records did not contain an absolute due date.
 
-At the current stage, the Focus and Progress sections introduce functionality intended for future updates.
+## GitHub workflow
 
-## Future Improvements
+Use your feature branch rather than pushing development changes directly into `main`:
 
-- Implement the 25-minute focus timer.
-- Add a progress dashboard with task, goal, and study-time summaries.
-- Improve the home dashboard with live information from saved records.
-- Continue improving the user experience and accessibility.
+```powershell
+git branch --show-current
+git add .
+git commit -m "fix: complete focus progress and offline dates"
+git push origin feat/learnova-implement
+```
 
-## Project Status
+Once tested, open a Pull Request from `feat/learnova-implement` into `main`. Review the changes and merge it.
 
-**Under development** — task management, goal management, local SQLite storage, and bottom-tab navigation are implemented. Focus timer and progress analytics are planned.
+## Known limits
 
-## License
-
-A `LICENSE` file is included in the repository. Review its terms and copyright details before publishing or reusing the project under a specific license.
-
----
-
-**Learnova — Learn better. Stay organized. Grow every day.**
+- Single-device offline app; no account or synchronization.
+- Task date choices are quick presets, not a full calendar/time picker.
+- Focus uses a fixed 25-minute session. To save actual time, tap Finish & save; Reset discards the unsaved session.
+- Deleting the app or clearing its local storage can remove saved data.

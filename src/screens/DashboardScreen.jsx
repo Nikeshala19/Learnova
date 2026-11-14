@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
+import { useSQLiteContext } from 'expo-sqlite';
+import { useFocusEffect } from '@react-navigation/native';
+import { getProgressStats } from '../database/database';
 
 const shortcuts = [
   { label: 'My Tasks', hint: 'Plan your day', icon: 'checkbox-outline', route: 'Tasks' },
@@ -12,6 +15,17 @@ const shortcuts = [
 ];
 
 export default function DashboardScreen({ navigation }) {
+  const db = useSQLiteContext();
+  const [summary, setSummary] = useState(null);
+
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    getProgressStats(db)
+      .then((data) => { if (active) setSummary(data); })
+      .catch((error) => console.error('Could not load Home summary:', error));
+    return () => { active = false; };
+  }, [db]));
+
   return (
     <SafeAreaView edges={['top']} style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -40,6 +54,21 @@ export default function DashboardScreen({ navigation }) {
           </Pressable>
         </View>
 
+        <View style={styles.summaryRow}>
+          <View style={styles.summaryTile}>
+            <Text style={styles.summaryNumber}>
+              {summary ? summary.totalTasks - summary.completedTasks : '—'}
+            </Text>
+            <Text style={styles.summaryLabel}>Tasks to do</Text>
+          </View>
+          <View style={styles.summaryTile}>
+            <Text style={styles.summaryNumber}>
+              {summary ? summary.totalGoals - summary.achievedGoals : '—'}
+            </Text>
+            <Text style={styles.summaryLabel}>Active goals</Text>
+          </View>
+        </View>
+
         <Text style={styles.sectionTitle}>Your space</Text>
         <Text style={styles.sectionSubtitle}>What would you like to do?</Text>
         <View style={styles.grid}>
@@ -57,7 +86,7 @@ export default function DashboardScreen({ navigation }) {
           ))}
         </View>
         <Text style={styles.note}>
-          Your tasks, goals, and study records will appear here once we add offline storage.
+          Your tasks, goals, and saved study sessions are stored on this device, even offline.
         </Text>
       </ScrollView>
     </SafeAreaView>
@@ -84,6 +113,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 9,
   },
   primaryButtonText: { color: colors.background, fontWeight: '800', fontSize: 15 },
+  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 26, gap: 12 },
+  summaryTile: { flex: 1, backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, padding: 17, borderRadius: 18 },
+  summaryNumber: { color: colors.mint, fontSize: 27, fontWeight: '800' },
+  summaryLabel: { color: colors.muted, fontSize: 12, marginTop: 5 },
   sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '800' },
   sectionSubtitle: { color: colors.muted, fontSize: 14, marginTop: 6, marginBottom: 17 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 },

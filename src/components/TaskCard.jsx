@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
+import { dueDateLabel } from '../utils/dates';
 
 const priorityColors = {
   High: '#FFAEAE',
@@ -21,7 +22,10 @@ export default function TaskCard({ task, onOpen, onToggle }) {
     >
       <View style={styles.mainRow}>
         <Pressable
-          onPress={() => onToggle(task.id)}
+          onPress={(event) => {
+            event.stopPropagation();
+            onToggle(task.id);
+          }}
           style={styles.checkArea}
           hitSlop={8}
           accessibilityRole="checkbox"
@@ -47,7 +51,7 @@ export default function TaskCard({ task, onOpen, onToggle }) {
       <View style={styles.metaRow}>
         <View style={styles.metaItem}>
           <Ionicons name="calendar-outline" size={14} color={colors.muted} />
-          <Text style={styles.metaText}>{task.due}</Text>
+          <Text style={styles.metaText}>{dueDateLabel(task.due)}</Text>
         </View>
         <View style={[styles.priorityPill, { borderColor: priorityColor + '55' }]}>
           <View style={[styles.priorityDot, { backgroundColor: priorityColor }]} />

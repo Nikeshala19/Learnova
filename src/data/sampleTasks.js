@@ -1,5 +1,5 @@
-// Phase 3: Original example records for testing the Tasks interface.
-// These will move into the local SQLite database in Phase 4.
+// Original example records seeded once into the offline SQLite database.
+// Relative dates are converted to fixed dates when inserted.
 export const sampleTasks = [
   {
     id: 'task-1',
